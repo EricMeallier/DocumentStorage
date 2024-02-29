@@ -2,15 +2,20 @@ package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DocumentServiceTest {
 
+    @Autowired
     DocumentService documentService;
 
     @Test
@@ -68,7 +73,7 @@ class DocumentServiceTest {
         metadata = new Metadata("author","JohnDoe");
         metadatas = new HashMap<>();
         metadatas.put(metadata.key(), metadata);
-        documentService.addMetadata(documentId,metadatas);
+        documentService.setMetadata(documentId,metadatas);
         retrievedMD = documentService.getMetadata(documentId);
         assertNotNull(retrievedMD);
         assertEquals(1 , retrievedMD.size());
@@ -82,7 +87,7 @@ class DocumentServiceTest {
         Map<String, Metadata> metadatas = new HashMap<>();
         Metadata metadata = new Metadata("name","NoNameFile");
         metadatas.put(metadata.key(), metadata);
-        UUID documentId1 = documentService.storeData(myData,metadatas);
+        documentService.storeData(myData,metadatas);
 
         // Add second document with name metadata
         myData = UUID.randomUUID().toString().getBytes();
@@ -98,7 +103,7 @@ class DocumentServiceTest {
         List<UUID> retrieved = documentService.search(metadatas);
 
         assertEquals(1,retrieved.size());
-        assertEquals(documentId1.toString(),retrieved.get(0).toString());
+        assertEquals(documentId2.toString(),retrieved.get(0).toString());
 
         // retrieve none file
         metadatas = new HashMap<>();
