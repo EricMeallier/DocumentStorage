@@ -2,6 +2,7 @@ package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,5 +114,23 @@ class DocumentServiceTest {
         retrieved = documentService.search(metadatas);
 
         assertEquals(0,retrieved.size());
+    }
+
+    @Test
+    @Timeout(value=50,unit=TimeUnit.MILLISECONDS)
+    void littlePerf() {
+
+        UUID documentId = UUID.randomUUID();
+        for (int i = 0; i < 1000; i++)
+            documentId = documentService.storeData(UUID.randomUUID().toString().getBytes());
+        assertNotNull(documentService.getData(documentId));
+
+        Map<String, Metadata> metadatas = new HashMap<>();
+        for (int i = 0; i < 1000; i++)
+            metadatas.put(String.valueOf(i), new Metadata(String.valueOf(i), "TogetherOnTheSand"));
+
+        for (int i = 0; i < 100; i++)
+            documentService.setMetadata(documentId, metadatas);
+        assertEquals(1000,documentService.getMetadata(documentId).size());
     }
 }

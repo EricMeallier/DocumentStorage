@@ -86,7 +86,6 @@ Ces meta-données se présentent sous forme de clé-valeur ou clé-liste de vale
 
 - addMetadata(documentId, List<metadata>)
 - setMetadata(documentId, metadata)
-- metadata <= setMetadata(documentId)
 - List<documentId> <= search(List<metadata>)
 - List<metadata> <= getMetadata(documentId)
 
