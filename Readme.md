@@ -107,3 +107,7 @@ Metadata {
 - document <= getDocument(documentId)
 
 
+# References
+
+https://reflectoring.io/spring-hexagonal/
+https://www.baeldung.com/hexagonal-architecture-ddd-spring
