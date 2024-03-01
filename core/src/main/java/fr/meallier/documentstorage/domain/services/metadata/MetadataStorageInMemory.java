@@ -1,35 +1,16 @@
-package fr.meallier.documentstorage.domain.services;
+package fr.meallier.documentstorage.domain.services.metadata;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class DocumentServiceImpl implements DocumentService {
+@Qualifier("InMemory")
+public class MetadataStorageInMemory implements MetadataStorage {
 
-    static private final Map<UUID, byte[]> DATA = new HashMap<>();
     static private final Map<UUID, Map<String, Metadata>> METADATAS = new HashMap<>();
-
-    @Override
-    public UUID storeData(byte[] data) {
-        UUID id = UUID.randomUUID();
-        DATA.put(id, data);
-        return id;
-    }
-
-    @Override
-    public UUID storeData(byte[] data, Map<String, Metadata> metadatas) {
-        UUID id = UUID.randomUUID();
-        DATA.put(id, data);
-        METADATAS.put(id, metadatas);
-        return id;
-    }
-
-    @Override
-    public byte[] getData(UUID documentId) {
-        return DATA.get(documentId);
-    }
 
     @Override
     public void addMetadata(UUID documentId, Map<String, Metadata> metadatas) {
@@ -60,6 +41,27 @@ public class DocumentServiceImpl implements DocumentService {
         return result;
     }
 
+    @Override
+    public List<UUID> searchForMetadata(List<String> metadataKeys) {
+        List<UUID> result = new ArrayList<>();
+
+        metadataKeys.forEach(k -> result.addAll(searchUniqueForMetadata(k)));
+        return result;    }
+
+    @Override
+    public Map<String, Metadata> indexDocument(byte[] data) {
+        return null;
+    }
+
+    @Override
+    public void removeMetadata(UUID documentId, List<String> metadataKeys) {
+        if (metadataKeys != null && !metadataKeys.isEmpty()) {
+            metadataKeys.forEach(s -> {
+                METADATAS.get(documentId).remove(s);
+            });
+        }
+    }
+
     private List<UUID> searchUnique(Metadata metadata) {
         List<UUID> result = new ArrayList<>();
 
@@ -71,4 +73,18 @@ public class DocumentServiceImpl implements DocumentService {
 
         return result;
     }
+
+    private List<UUID> searchUniqueForMetadata(String metadataKey) {
+        List<UUID> result = new ArrayList<>();
+
+        if (metadataKey != null && ! metadataKey.isEmpty()) {
+            METADATAS.forEach((k, v) -> v.forEach((k2, v2) -> {
+                if (k2.equals(metadataKey)) result.add(k);
+            }));
+        }
+
+        return result;
+    }
+
+
 }

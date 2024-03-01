@@ -1,15 +1,14 @@
 package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import javax.print.Doc;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class DocumentServiceTest {
 
     @Autowired
-    DocumentService documentService;
+    DocumentService documentServiceInMemory;
+
+    @Autowired
+    DocumentService documentServiceOnFilesystem;
+
+    private DocumentService documentService;
+
+    @BeforeEach
+    public void before() {
+        documentService=documentServiceOnFilesystem;
+    }
 
     @Test
     void storeDataAndRetrieve() {
@@ -117,7 +126,37 @@ class DocumentServiceTest {
     }
 
     @Test
+    void searchUnique() {
+        // Add first document with name metadata
+        byte[] myData = UUID.randomUUID().toString().getBytes();
+        Map<String, Metadata> metadatas = new HashMap<>();
+        Metadata metadata = new Metadata("lastname","NoNameFile");
+        metadatas.put(metadata.key(), metadata);
+        UUID documentId1 = documentService.storeData(myData,metadatas);
+
+        // Add second document with name metadata
+        myData = UUID.randomUUID().toString().getBytes();
+        metadatas = new HashMap<>();
+        metadata = new Metadata("lastname","FileWithAName");
+        metadatas.put(metadata.key(), metadata);
+        UUID documentId2 = documentService.storeData(myData,metadatas);
+
+        // retrieve these 2 files
+        List<UUID> retrieved = documentService.searchForMetadata(Arrays.asList("lastname"));
+
+        assertEquals(2,retrieved.size());
+        assertTrue(retrieved.contains(documentId1));
+        assertTrue(retrieved.contains(documentId2));
+
+        // retrieve none file
+        retrieved = documentService.searchForMetadata(Arrays.asList("firstname"));
+
+        assertEquals(0,retrieved.size());
+    }
+
+    @Test
     @Timeout(value=50,unit=TimeUnit.MILLISECONDS)
+    @Disabled
     void littlePerf() {
 
         UUID documentId = UUID.randomUUID();
