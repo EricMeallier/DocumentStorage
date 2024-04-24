@@ -14,7 +14,7 @@ public class MetadataStorageInMemory implements MetadataStorage {
 
     @Override
     public void addMetadata(UUID documentId, Map<String, Metadata> metadatas) {
-        if (metadatas != null && !metadatas.isEmpty()) {
+        if (metadatas != null) {
             if (!METADATAS.containsKey(documentId))
                 METADATAS.put(documentId,new HashMap<>());
             metadatas.forEach(METADATAS.get(documentId)::put);
@@ -22,15 +22,38 @@ public class MetadataStorageInMemory implements MetadataStorage {
     }
 
     @Override
+    public void addMetadata(UUID documentId, Metadata metadata) {
+
+        if (! METADATAS.containsKey(documentId))
+            METADATAS.put(documentId, new HashMap<>());
+
+        if (METADATAS.get(documentId).containsKey(metadata.key())) {
+            Metadata newMetadata = new Metadata(metadata.key(), METADATAS.get(documentId).get(metadata.key()).values() + Metadata.separator + metadata.values());
+            METADATAS.get(documentId).put(metadata.key(), newMetadata);
+        } else {
+            METADATAS.get(documentId).put(metadata.key(), metadata);
+        }
+    }
+
+
+    @Override
     public void setMetadata(UUID documentId, Map<String, Metadata> metadatas) {
-        if (METADATAS.get(documentId) != null && !METADATAS.get(documentId).isEmpty())
-            METADATAS.get(documentId).clear();
+         if (METADATAS.get(documentId) != null)
+              METADATAS.get(documentId).clear();
         addMetadata(documentId,metadatas);
     }
 
     @Override
+    public void setMetadata(UUID documentId, Metadata metadata) {
+        if (! METADATAS.containsKey(documentId))
+            METADATAS.put(documentId, new HashMap<>());
+
+        METADATAS.get(documentId).put(metadata.key(),metadata);
+    }
+
+    @Override
     public Map<String, Metadata> getMetadata(UUID documentId) {
-        return METADATAS.get(documentId);
+        return new HashMap<>(METADATAS.get(documentId));
     }
 
     @Override
@@ -48,10 +71,7 @@ public class MetadataStorageInMemory implements MetadataStorage {
         metadataKeys.forEach(k -> result.addAll(searchUniqueForMetadata(k)));
         return result;    }
 
-    @Override
-    public Map<String, Metadata> indexDocument(byte[] data) {
-        return null;
-    }
+
 
     @Override
     public void removeMetadata(UUID documentId, List<String> metadataKeys) {
@@ -60,6 +80,11 @@ public class MetadataStorageInMemory implements MetadataStorage {
                 METADATAS.get(documentId).remove(s);
             });
         }
+    }
+
+    @Override
+    public List<UUID> getAllDocuments() {
+        return List.copyOf(METADATAS.keySet());
     }
 
     private List<UUID> searchUnique(Metadata metadata) {

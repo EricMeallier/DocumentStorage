@@ -10,7 +10,11 @@ public interface MetadataStorage {
 
     void addMetadata(UUID documentId, Map<String,Metadata> metadatas);
 
+    void addMetadata(UUID documentId, Metadata metadata);
+
     void setMetadata(UUID documentId, Map<String,Metadata> metadatas);
+
+    void setMetadata(UUID documentId, Metadata metadata);
 
     Map<String,Metadata> getMetadata(UUID documentId);
 
@@ -18,7 +22,7 @@ public interface MetadataStorage {
 
     List<UUID> searchForMetadata(List<String> metadataKeys);
 
-    Map<String, Metadata> indexDocument(byte[] data);
-
     void removeMetadata(UUID documentId, List<String> metadataKeys);
+
+    List<UUID> getAllDocuments();
 }

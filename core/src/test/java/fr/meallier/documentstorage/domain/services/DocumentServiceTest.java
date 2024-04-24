@@ -3,11 +3,8 @@ package fr.meallier.documentstorage.domain.services;
 import fr.meallier.documentstorage.domain.core.Metadata;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import javax.print.Doc;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -43,14 +40,17 @@ class DocumentServiceTest {
         byte[] myData = UUID.randomUUID().toString().getBytes();
         UUID documentId = documentService.storeData(myData);
 
+        Map<String, Metadata> retrievedMD = documentService.getMetadata(documentId);
+        int originalMDCount = retrievedMD.size();
+
         //  add Metadata first time when it's empty
         Metadata metadata = new Metadata("name","NoNameFile");
         Map<String, Metadata> metadatas = new HashMap<>();
         metadatas.put(metadata.key(), metadata);
         documentService.addMetadata(documentId,metadatas);
-        Map<String, Metadata> retrievedMD = documentService.getMetadata(documentId);
+        retrievedMD = documentService.getMetadata(documentId);
         assertNotNull(retrievedMD);
-        assertEquals(1 , retrievedMD.size());
+        assertEquals(originalMDCount + 1 , retrievedMD.size());
         assertEquals("NoNameFile",retrievedMD.get("name").values());
 
         // add Metadata second time and check
@@ -60,7 +60,7 @@ class DocumentServiceTest {
         documentService.addMetadata(documentId,metadatas);
         retrievedMD = documentService.getMetadata(documentId);
         assertNotNull(retrievedMD);
-        assertEquals(2 , retrievedMD.size());
+        assertEquals(originalMDCount + 2 , retrievedMD.size());
         assertEquals("NoNameFile",retrievedMD.get("name").values());
         assertEquals("JohnDoe",retrievedMD.get("author").values());
     }
@@ -77,7 +77,7 @@ class DocumentServiceTest {
         documentService.setMetadata(documentId,metadatas);
         Map<String, Metadata> retrievedMD = documentService.getMetadata(documentId);
         assertNotNull(retrievedMD);
-        assertEquals(1 , retrievedMD.size());
+        assertEquals( 1 , retrievedMD.size());
         assertEquals("NoNameFile",retrievedMD.get("name").values());
 
         //  set Metadata second time and check
@@ -142,14 +142,14 @@ class DocumentServiceTest {
         UUID documentId2 = documentService.storeData(myData,metadatas);
 
         // retrieve these 2 files
-        List<UUID> retrieved = documentService.searchForMetadata(Arrays.asList("lastname"));
+        List<UUID> retrieved = documentService.searchForMetadata(List.of("lastname"));
 
         assertEquals(2,retrieved.size());
         assertTrue(retrieved.contains(documentId1));
         assertTrue(retrieved.contains(documentId2));
 
         // retrieve none file
-        retrieved = documentService.searchForMetadata(Arrays.asList("firstname"));
+        retrieved = documentService.searchForMetadata(List.of("firstname"));
 
         assertEquals(0,retrieved.size());
     }

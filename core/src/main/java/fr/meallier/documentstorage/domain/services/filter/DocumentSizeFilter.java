@@ -1,9 +1,11 @@
 package fr.meallier.documentstorage.domain.services.filter;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Component("DocumentSizeFilter")
 public class DocumentSizeFilter implements MetadataFilter{
 
     public static String KEY = "DocumentSize";

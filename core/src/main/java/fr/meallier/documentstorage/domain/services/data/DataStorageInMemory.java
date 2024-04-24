@@ -19,6 +19,6 @@ public class DataStorageInMemory implements DataStorage {
 
     @Override
     public byte[] getData(UUID documentId) {
-        return DATA.get(documentId);
+        return DATA.get(documentId).clone();
     }
 }
