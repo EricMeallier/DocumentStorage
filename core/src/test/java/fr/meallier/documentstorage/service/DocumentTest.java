@@ -1,12 +1,7 @@
-package fr.meallier.documentstorage.domain.services;
+package fr.meallier.documentstorage.service;
 
-import fr.meallier.documentstorage.domain.core.Metadata;
-import fr.meallier.documentstorage.domain.services.filter.MetadataProcessorConfig;
-import fr.meallier.documentstorage.service.DocumentManagement;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataProcessorConfig;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @EnableConfigurationProperties({MetadataProcessorConfig.class})
 class DocumentTest {
 
 
-    static private Logger LOGGER = LoggerFactory.getLogger(Class.class.getName());
+    static final private Logger LOGGER = LoggerFactory.getLogger(Class.class.getName());
 
     @Autowired
     DocumentManagement documentManagement;

@@ -2,17 +2,11 @@ package fr.meallier.documentstorage.service;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import fr.meallier.documentstorage.domain.services.DocumentService;
-import fr.meallier.documentstorage.domain.services.filter.DocumentSizeFilter;
-import fr.meallier.documentstorage.domain.services.filter.MetadataFilter;
-import fr.meallier.documentstorage.domain.services.filter.MetadataProcessor;
 import org.springframework.stereotype.Component;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Component

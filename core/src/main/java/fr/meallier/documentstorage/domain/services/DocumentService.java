@@ -2,7 +2,9 @@ package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import fr.meallier.documentstorage.domain.services.data.DataStorage;
-import fr.meallier.documentstorage.domain.services.filter.MetadataProcessor;
+import fr.meallier.documentstorage.domain.services.data.filtering.InputDataProcessor;
+import fr.meallier.documentstorage.domain.services.data.filtering.OutputDataProcessor;
+import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataProcessor;
 import fr.meallier.documentstorage.domain.services.metadata.MetadataStorage;
 
 import java.util.*;
@@ -11,14 +13,20 @@ public abstract class DocumentService {
 
     MetadataProcessor metadataProcessor;
 
+    InputDataProcessor inputDataProcessor;
+
+    OutputDataProcessor outputDataProcessor;
+
     DataStorage dataStorage;
 
     MetadataStorage metadataStorage;
 
-    public DocumentService( DataStorage dataStorage, MetadataStorage metadataStorage,MetadataProcessor metadataProcessor) {
+    public DocumentService( DataStorage dataStorage, MetadataStorage metadataStorage,MetadataProcessor metadataProcessor, InputDataProcessor inputDataProcessor, OutputDataProcessor outputDataProcessor) {
         this.dataStorage = dataStorage;
         this.metadataStorage = metadataStorage;
         this.metadataProcessor = metadataProcessor;
+        this.inputDataProcessor = inputDataProcessor;
+        this.outputDataProcessor = outputDataProcessor;
     }
 
     /**
@@ -27,8 +35,9 @@ public abstract class DocumentService {
      * @return id of the storage
      */
     public UUID storeData(byte[] data) {
-        Map<String, Metadata> generatedMetadatas = indexDocument(data);
-        UUID documentId = dataStorage.storeData(data);
+        Map<String, Metadata> generatedMetadatas = indexMetadataDocument(data);
+        byte [] dataToStore = inputDataProcessor.applyFilters(data);
+        UUID documentId = dataStorage.storeData(dataToStore);
         metadataStorage.setMetadata(documentId,generatedMetadatas);
         return documentId;
     }
@@ -40,8 +49,9 @@ public abstract class DocumentService {
      * @return data
      */
     public UUID storeData(byte[] data, Map<String, Metadata> metadatas) {
-        Map<String, Metadata> generatedMetadatas = indexDocument(data);
-        UUID documentId = dataStorage.storeData(data);
+        Map<String, Metadata> generatedMetadatas = indexMetadataDocument(data);
+        byte [] dataToStore = inputDataProcessor.applyFilters(data);
+        UUID documentId = dataStorage.storeData(dataToStore);
         metadataStorage.setMetadata(documentId,generatedMetadatas);
         metadataStorage.addMetadata(documentId,metadatas);
         return documentId;
@@ -59,7 +69,7 @@ public abstract class DocumentService {
      * @return data
      */
     public byte[] getData(UUID documentId) {
-        return dataStorage.getData(documentId);
+        return outputDataProcessor.applyFilters(dataStorage.getData(documentId));
     }
 
     /**
@@ -156,7 +166,15 @@ public abstract class DocumentService {
         return result.toString();
     }
 
-    public Map<String, Metadata> indexDocument(byte[] data) {
+    public Map<String, Metadata> indexMetadataDocument(byte[] data) {
         return metadataProcessor.applyFilters(data);
+    }
+
+    public byte [] inputFilterDataDocument(byte[] data) {
+        return inputDataProcessor.applyFilters(data);
+    }
+
+    public byte [] outputFilterDataDocument(byte[] data) {
+        return outputDataProcessor.applyFilters(data);
     }
 }

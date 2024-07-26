@@ -1,6 +1,7 @@
-package fr.meallier.documentstorage.domain.services.filter;
+package fr.meallier.documentstorage.domain.services.metadata.filter;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
+import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataFilter;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -9,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Component("DocumentCreationDateFilter")
-public class DocumentCreationDateFilter implements MetadataFilter{
+public class DocumentCreationDateFilter implements MetadataFilter {
 
     public static String KEY = "DocumentCreationDate";
     @Override

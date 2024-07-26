@@ -1,5 +1,6 @@
-package fr.meallier.documentstorage.domain.services.data;
+package fr.meallier.documentstorage.domain.services.data.storage;
 
+import fr.meallier.documentstorage.domain.services.data.DataStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 

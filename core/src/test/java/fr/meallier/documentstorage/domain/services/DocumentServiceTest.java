@@ -32,7 +32,7 @@ class DocumentServiceTest {
         UUID documentId = documentService.storeData(myData);
 
         byte[] retrieveDataData = documentService.getData(documentId);
-        assertArrayEquals(myData,retrieveDataData);
+        assertArrayEquals(Arrays.copyOfRange(myData,4, myData.length),retrieveDataData);
     }
 
     @Test

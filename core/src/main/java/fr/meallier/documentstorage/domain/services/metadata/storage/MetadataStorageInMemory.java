@@ -1,6 +1,7 @@
-package fr.meallier.documentstorage.domain.services.metadata;
+package fr.meallier.documentstorage.domain.services.metadata.storage;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
+import fr.meallier.documentstorage.domain.services.metadata.MetadataStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 

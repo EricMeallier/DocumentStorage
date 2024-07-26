@@ -1,5 +1,6 @@
-package fr.meallier.documentstorage.domain.services.data;
+package fr.meallier.documentstorage.domain.services.data.storage;
 
+import fr.meallier.documentstorage.domain.services.data.DataStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +14,7 @@ import java.util.*;
 @Qualifier("OnFilesystem")
 public class DataStorageOnFilesystem implements DataStorage {
 
-    static private Logger LOGGER = LoggerFactory.getLogger(Class.class.getName());
+    static final private Logger LOGGER = LoggerFactory.getLogger(Class.class.getName());
     @Value("${document.filepath.root}")
     String filePathRoot;
 
@@ -37,7 +38,9 @@ public class DataStorageOnFilesystem implements DataStorage {
         byte[] bytes={};
         try (FileInputStream inputStream = new FileInputStream(inputFile)) {
             bytes = new byte[(int) inputFile.length()];
-            inputStream.read(bytes);
+            int nbCount = inputStream.read(bytes);
+            if (bytes.length != nbCount)
+                throw new IOException("File not read entirely");
         } catch (IOException ioException) {
             LOGGER.error("Erreur de lecture depuis le filesystem $1",filePath, ioException);
         }

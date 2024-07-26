@@ -1,7 +1,9 @@
 package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.services.data.DataStorage;
-import fr.meallier.documentstorage.domain.services.filter.MetadataProcessor;
+import fr.meallier.documentstorage.domain.services.data.filtering.InputDataProcessor;
+import fr.meallier.documentstorage.domain.services.data.filtering.OutputDataProcessor;
+import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataProcessor;
 import fr.meallier.documentstorage.domain.services.metadata.MetadataStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,8 +16,8 @@ import java.util.*;
 public class DocumentServiceInMemory extends DocumentService {
 
     @Autowired
-    public DocumentServiceInMemory(DataStorage dataStorageInMemory, MetadataStorage metadataStorageInMemory, MetadataProcessor metadataProcessor) {
-        super(dataStorageInMemory,metadataStorageInMemory,metadataProcessor);
+    public DocumentServiceInMemory(DataStorage dataStorageInMemory, MetadataStorage metadataStorageInMemory, MetadataProcessor metadataProcessor, InputDataProcessor inputDataProcessor, OutputDataProcessor outputDataProcessor) {
+        super(dataStorageInMemory,metadataStorageInMemory,metadataProcessor,inputDataProcessor,outputDataProcessor);
     }
 
     @Override

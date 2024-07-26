@@ -1,4 +1,4 @@
-package fr.meallier.documentstorage.domain.services.filter;
+package fr.meallier.documentstorage.domain.services.metadata.filtering;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import org.springframework.context.ApplicationContext;
