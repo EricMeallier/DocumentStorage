@@ -1,7 +1,7 @@
 package fr.meallier.documentstorage.domain.services;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
-import fr.meallier.documentstorage.domain.services.metadata.filter.DocumentSizeFilter;
+import fr.meallier.documentstorage.domain.services.metadata.filters.DocumentSizeFilter;
 import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

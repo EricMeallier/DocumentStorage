@@ -1,4 +1,4 @@
-package fr.meallier.documentstorage.domain.services.data.filter;
+package fr.meallier.documentstorage.domain.services.data.filters;
 
 import fr.meallier.documentstorage.domain.services.data.filtering.DataFilter;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package fr.meallier.documentstorage.domain.services.metadata.filter;
+package fr.meallier.documentstorage.domain.services.metadata.filters;
 
 import fr.meallier.documentstorage.domain.core.Metadata;
 import fr.meallier.documentstorage.domain.services.metadata.filtering.MetadataFilter;
